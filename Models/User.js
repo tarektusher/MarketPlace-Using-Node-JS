@@ -15,7 +15,12 @@ const userSchema = new mongoose.Schema(
           },
           age : {
                type : Number,
-          }
+          },
+          type : {
+               type : String,
+               enum : ['admin','customer'],
+               default : 'customer',
+          },
      },
      {
           timestamps : true
