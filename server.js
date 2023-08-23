@@ -27,7 +27,7 @@ app.post('/uploades',upload.single("file"), (req,res) =>{
 //? Routes
 app.use('/users', require('./routes/api/users'));
 app.use('/users', require('./routes/api/tasks'));
-app.use('/products', require('./routes/api/products'));
+app.use('/users', require('./routes/api/products'));
 
 //?MongoDB Connect 
 connect_db();

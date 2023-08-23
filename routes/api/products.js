@@ -22,16 +22,21 @@ router.post(
           if(req?.user?.type != "admin"){
                return res.status(400).json({message : 'You are not an admin'});
           }
+
           const id = req.user.id;
-          const taskObj = {
-               title : req.body.title,
+          const ProductObj = {
+               name : req.body.name,
                desc : req.body.desc ?? "",
+               madeIn : req.body.madeIn ?? "",
+               price : req.body.price ?? "",
+               //fileId : req.body.fileId ?? "",
+               expireAt : new Date(),
                userId : id,
                //status : 'to-do'
           };
-          const task = new Task(taskObj);
-          await task.save();
-          res.status(201).json(task);
+          const product = new Product(ProductObj);
+          await product.save();
+          res.status(201).json(product);
      } catch (error) {
           console.error(error);
           res.status(500).json({message : `Something is worng in the server`});
