@@ -7,7 +7,30 @@ const File = require('../../Models/File');
 const authenticateToken = require('../../MiddleWare/auth');
 const router = express.Router();
 const {body, validationResult} = require('express-validator');
+const multer  = require('multer');
 
+
+const storage = multer.diskStorage({
+     destination: function (req, file, cb) {
+       cb(null, './public/data/uploads/')
+     },
+     filename: function (req, file, cb) {
+       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9) 
+     //   const uniqueSuffix = 'MyMan.jpg';
+       cb(null, file.fieldname + '-' + uniqueSuffix + file.originalname)
+     }
+})
+const upload = multer({ storage: storage })
+router.post('/uploades',upload.single("file"), async(req,res) =>{
+     const fileObj = {
+          name : req.file.filename,
+          path : req.file.path,
+     }
+     const uploads = new File(fileObj)
+     await uploads.save();
+     res.status(201).json(uploads);
+          
+})
 //? API to create a User
 router.post(
      '/products',
@@ -29,14 +52,19 @@ router.post(
                desc : req.body.desc ?? "",
                madeIn : req.body.madeIn ?? "",
                price : req.body.price ?? "",
-               //fileId : req.body.fileId ?? "",
+               fileId : req.body.fileId ?? "",
                expireAt : new Date(),
                userId : id,
                //status : 'to-do'
           };
+
           const product = new Product(ProductObj);
           await product.save();
-          res.status(201).json(product);
+          if(product?.fileId){
+               // await product.populate(File).exec();
+               const cretatedProduct = await Product.findById(product._id).populate(['fileId','userId']).exec();
+               res.status(201).json(cretatedProduct);
+          }
      } catch (error) {
           console.error(error);
           res.status(500).json({message : `Something is worng in the server`});

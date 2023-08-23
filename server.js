@@ -8,7 +8,6 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 6000;
 const multer  = require('multer');
 
-// const upload = multer({ dest : "./public/data/uploads/" });
 const storage = multer.diskStorage({
      destination: function (req, file, cb) {
        cb(null, './public/data/uploads/')
